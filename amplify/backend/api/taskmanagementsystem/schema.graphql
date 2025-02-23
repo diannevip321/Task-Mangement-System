@@ -1,0 +1,24 @@
+enum TaskStatus {
+    PENDING
+    IN_PROGRESS
+    COMPLETED
+}
+
+type User @model @auth(rules: [{ allow: owner }]) {
+    id: ID!
+    username: String!
+    email: String!
+    createdAt: AWSDateTime
+    tasks: [Task] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type Task @model @auth(rules: [{ allow: owner }]) {
+    id: ID!
+    title: String!
+    description: String
+    status: TaskStatus
+    createdAt: AWSDateTime
+    updatedAt: AWSDateTime
+    userId: ID! @index(name: "byUser")
+    user: User @belongsTo(fields: ["userId"])
+}
